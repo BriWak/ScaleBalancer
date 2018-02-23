@@ -13,8 +13,8 @@ object ScaleBalancer {
 
   def balance(input: String): String = {
 
-    val splitString = input.replaceAll("\\[","").replaceAll("\\]","").split(",").map(_.toInt)
-    val lScale = splitString(0)
+    val splitString = "[0-9]+".r.findAllIn(input).map(_.toInt).toList
+    val lScale = splitString.head
     val rScale = splitString(1)
     val weightList = splitString.slice(2,splitString.length)
     val diff = math.abs(lScale - rScale)
@@ -23,8 +23,8 @@ object ScaleBalancer {
     if (diff == 0) ""
     else if (weightList.contains(math.abs(lScale - rScale))){
       diff.toString}
-    else if (foundMatch.length > 0){
-      (foundMatch(0) - lScale).toString + "," + (foundMatch(0) - rScale).toString
+    else if (foundMatch.nonEmpty){
+      (foundMatch.head - lScale).toString + "," + (foundMatch.head - rScale).toString
     } else throw new BalanceNotPossibleException
   }
 
